@@ -44,6 +44,8 @@ export interface LoginProps {
   onSignUp?: () => void;
   devMode?: boolean;
   className?: string;
+  isSubmitting?: boolean;
+  error?: string | null;
 }
 
 export default function Login({
@@ -53,6 +55,8 @@ export default function Login({
   onSignUp,
   devMode = true,
   className,
+  isSubmitting = false,
+  error,
 }: LoginProps) {
   const [email, setEmail] = useState("");
 
@@ -115,11 +119,14 @@ export default function Login({
 
             <button
               type="submit"
-              className="flex h-10 w-full items-center justify-center gap-1.5 rounded-lg bg-violet-600 text-sm font-medium text-white transition-colors hover:bg-violet-700"
+              disabled={isSubmitting}
+              className="flex h-10 w-full items-center justify-center gap-1.5 rounded-lg bg-violet-600 text-sm font-medium text-white transition-colors hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Continue
+              {isSubmitting ? "Continuing..." : "Continue"}
               <ArrowRight className="size-4" />
             </button>
+
+            {error && <p className="text-sm text-red-600">{error}</p>}
           </form>
         </div>
 

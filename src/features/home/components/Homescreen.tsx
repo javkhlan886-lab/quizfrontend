@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ChevronLeft, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { apiUrl } from "@/lib/api";
+import { authHeaders, clearSession, getUser, type AuthUser } from "@/lib/auth";
 import HistorySidebar from "./HistorySidebar";
 import ArticleForm from "./ArticleForm";
 import ArticleDetail from "./ArticleDetail";
@@ -32,6 +34,9 @@ export default function Homescreen({
   onGenerateSummary,
   className,
 }: HomescreenProps) {
+  const router = useRouter();
+  const [user, setUser] = useState<AuthUser | null>(null);
+
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -50,14 +55,32 @@ export default function Homescreen({
   const canGenerate =
     title.trim().length > 0 && content.trim().length > 0 && !isGenerating;
 
+  function logout() {
+    clearSession();
+    router.push("/");
+  }
+
+  // Not signed in? Send them back to the login page instead of showing an
+  // empty, broken screen.
+  useEffect(() => {
+    const current = getUser();
+    if (!current) {
+      router.push("/");
+      return;
+    }
+    setUser(current);
+  }, [router]);
+
   async function loadArticles() {
-    const res = await fetch(apiUrl("/api/articles"));
+    const res = await fetch(apiUrl("/api/articles"), { headers: authHeaders() });
+    if (res.status === 401) return logout();
     if (res.ok) setArticles(await res.json());
   }
 
   useEffect(() => {
-    loadArticles();
-  }, []);
+    if (user) loadArticles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   async function handleGenerate() {
     if (!canGenerate) return;
@@ -69,9 +92,10 @@ export default function Homescreen({
     try {
       const res = await fetch(apiUrl("/api/summarize"), {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({ title, content }),
       });
+      if (res.status === 401) return logout();
       const data = await res.json();
 
       if (!res.ok) {
@@ -97,7 +121,8 @@ export default function Homescreen({
   }
 
   async function openArticle(id: number) {
-    const res = await fetch(apiUrl(`/api/articles/${id}`));
+    const res = await fetch(apiUrl(`/api/articles/${id}`), { headers: authHeaders() });
+    if (res.status === 401) return logout();
     if (!res.ok) return;
     const data = await res.json();
     setDetail(data);
@@ -137,13 +162,14 @@ export default function Homescreen({
 
       const res = await fetch(apiUrl("/api/quiz-attempts"), {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({
           quizId: detail.quizId,
           answers,
           timeSpentSeconds,
         }),
       });
+      if (res.status === 401) return logout();
       const data = await res.json();
 
       if (!res.ok) {
@@ -158,6 +184,12 @@ export default function Homescreen({
     }
   }
 
+  function handleAccountClick() {
+    if (window.confirm("Гарах уу?")) {
+      logout();
+    }
+  }
+
   return (
     <div className={cn("flex h-screen flex-col bg-white", className)}>
       <header className="flex h-16 shrink-0 items-center justify-between border-b border-neutral-200 px-4">
@@ -165,7 +197,19 @@ export default function Homescreen({
           <Image src="/logo.png" alt="Гурван Дэлгэр ХХК" width={347} height={270} className="h-12 w-auto" />
           <span className="text-sm font-medium text-neutral-400">{appName}</span>
         </div>
-        <div className="size-8 rounded-full bg-gradient-to-br from-fuchsia-400 via-purple-500 to-indigo-500" />
+        <button
+          type="button"
+          onClick={handleAccountClick}
+          title="Гарах"
+          className="flex items-center gap-2 rounded-full py-1 pl-1 pr-3 transition-colors hover:bg-neutral-100"
+        >
+          <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-fuchsia-400 via-purple-500 to-indigo-500 text-sm font-semibold text-white">
+            {user?.email?.[0]?.toUpperCase() ?? "?"}
+          </div>
+          <span className="max-w-[160px] truncate text-sm font-medium text-neutral-700">
+            {user?.email}
+          </span>
+        </button>
       </header>
 
       <div className="flex flex-1 overflow-hidden">
