@@ -88,7 +88,7 @@ export default function QuizPanel({
       <p className="mt-1 text-sm text-neutral-500">
         {phase === "submitted"
           ? "Хэрхэн гүйцэтгэсэнээ харцгаая"
-          : "Агуулгаараа мэдлэгээ шалгах шалгалт өг"}
+          : " мэдлэгээ шалгах "}
       </p>
 
       {isTaking && currentQuestion && (
@@ -184,7 +184,7 @@ export default function QuizPanel({
           <div className="w-full max-w-xs rounded-lg bg-white p-4 shadow-lg">
             <h3 className="text-sm font-semibold text-neutral-900">Итгэлтэй байна уу?</h3>
             <p className="mt-1 text-sm text-red-600">
-              Хэрэв &apos;Шалгалтыг цуцлах&apos; дарвал энэ шалгалт эхнээсээ дахин эхэлнэ.
+              Хэрэв &apos; цуцлах&apos; дарвал энэ quiz эхнээсээ дахин эхэлнэ.
             </p>
             <div className="mt-3 flex gap-2">
               <button
@@ -202,7 +202,7 @@ export default function QuizPanel({
                 }}
                 className="flex-1 rounded-lg border border-neutral-200 px-3 py-1.5 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
               >
-                Шалгалтыг цуцлах
+                Quiz цуцлах
               </button>
             </div>
           </div>

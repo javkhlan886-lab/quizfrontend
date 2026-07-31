@@ -27,8 +27,9 @@ export default function ArticleForm({
   return (
     <>
       <p className="mt-1 text-sm text-neutral-500">
-        Мэдээллээ доор оруулбал хураангуй болон шалгалтын асуулт үүсгэнэ. Таны
-        нийтлэлүүд дараа ашиглахын тулд хажуугийн самбарт хадгалагдана.
+        Доор мэдээллээ буулгаад хураангуй, quiz асуулт шууд үүсгээрэй.
+        Нийтлэлүүд чинь Түүх хэсэгт хадгалагдаж, дараа хэзээ ч эргэж харах
+        боломжтой.
       </p>
 
       <div className="mt-5 flex flex-col gap-1.5">
@@ -40,7 +41,7 @@ export default function ArticleForm({
           type="text"
           value={title}
           onChange={(e) => onTitleChange(e.target.value)}
-          placeholder="Өгүүллийнхээ гарчгийг оруулна уу..."
+          placeholder="Гарчгаа бичээрэй..."
           className="h-10 w-full rounded-lg border border-neutral-200 px-3 text-sm text-neutral-900 outline-none placeholder:text-neutral-400 focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
         />
       </div>
@@ -53,7 +54,7 @@ export default function ArticleForm({
         <textarea
           value={content}
           onChange={(e) => onContentChange(e.target.value)}
-          placeholder="Өгүүллийн агуулгыг энд буулгана уу..."
+          placeholder="Текстээ энд буулгаарай..."
           rows={5}
           className="w-full resize-none rounded-lg border border-neutral-200 px-3 py-2 text-sm text-neutral-900 outline-none placeholder:text-neutral-400 focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
         />
@@ -66,7 +67,7 @@ export default function ArticleForm({
           disabled={!canGenerate}
           className="w-full rounded-lg bg-neutral-200 px-4 py-2 text-sm font-medium text-neutral-400 transition-colors disabled:cursor-not-allowed enabled:bg-violet-600 enabled:text-white enabled:hover:bg-violet-700 sm:w-auto"
         >
-          {isGenerating ? "Үүсгэж байна..." : "Хураангуй үүсгэх"}
+          {isGenerating ? "Үүсгэж байна..." : "Quiz үүсгэх"}
         </button>
       </div>
 
