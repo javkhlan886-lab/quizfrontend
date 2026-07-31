@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { ChevronLeft, LogOut, Sparkles } from "lucide-react";
+import { ChevronLeft, LogOut, Sparkles, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { apiUrl } from "@/lib/api";
 import { authHeaders, clearSession, getUser, type AuthUser } from "@/lib/auth";
@@ -30,7 +30,7 @@ export interface HomescreenProps {
 // wiring — the actual UI pieces live in HistorySidebar, ArticleForm,
 // ArticleDetail and QuizPanel.
 export default function Homescreen({
-  appName = "Шалгалтын апп",
+  appName = "Асуулт Quiz Үүсгэгч",
   onGenerateSummary,
   className,
 }: HomescreenProps) {
@@ -40,6 +40,7 @@ export default function Homescreen({
   const accountMenuRef = useRef<HTMLDivElement>(null);
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [showAllArticles, setShowAllArticles] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -84,16 +85,25 @@ export default function Homescreen({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  async function loadArticles() {
-    const res = await fetch(apiUrl("/api/articles"), { headers: authHeaders() });
+  async function loadArticles(showAll: boolean) {
+    const res = await fetch(apiUrl(`/api/articles${showAll ? "?all=true" : ""}`), {
+      headers: authHeaders(),
+    });
     if (res.status === 401) return logout();
     if (res.ok) setArticles(await res.json());
   }
 
   useEffect(() => {
-    if (user) loadArticles();
+    if (user) loadArticles(showAllArticles);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
+
+  function toggleViewAllArticles() {
+    const next = !showAllArticles;
+    setShowAllArticles(next);
+    loadArticles(next);
+    setAccountMenuOpen(false);
+  }
 
   async function handleGenerate() {
     if (!canGenerate) return;
@@ -125,7 +135,7 @@ export default function Homescreen({
       });
       setShowFullContent(false);
       resetQuiz();
-      loadArticles();
+      loadArticles(showAllArticles);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Тодорхойгүй алдаа гарлаа.");
     } finally {
@@ -134,7 +144,10 @@ export default function Homescreen({
   }
 
   async function openArticle(id: number) {
-    const res = await fetch(apiUrl(`/api/articles/${id}`), { headers: authHeaders() });
+    const res = await fetch(
+      apiUrl(`/api/articles/${id}${showAllArticles ? "?all=true" : ""}`),
+      { headers: authHeaders() }
+    );
     if (res.status === 401) return logout();
     if (!res.ok) return;
     const data = await res.json();
@@ -226,8 +239,18 @@ export default function Homescreen({
               </div>
               <button
                 type="button"
+                onClick={toggleViewAllArticles}
+                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-neutral-700 hover:bg-neutral-50"
+              >
+                <Users className="size-3.5" />
+                {showAllArticles
+                  ? "Зөвхөн өөрийнхийг харах"
+                  : "Бүх хэрэглэгчийн Quiz харах"}
+              </button>
+              <button
+                type="button"
                 onClick={logout}
-                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-600 hover:bg-neutral-50"
+                className="flex w-full items-center gap-2 border-t border-neutral-100 px-3 py-2 text-left text-sm text-red-600 hover:bg-neutral-50"
               >
                 <LogOut className="size-3.5" />
                 Гарах
@@ -241,6 +264,7 @@ export default function Homescreen({
         <HistorySidebar
           open={sidebarOpen}
           onToggle={() => setSidebarOpen((v) => !v)}
+          title={showAllArticles ? "Бүх хэрэглэгчийн Quiz" : "Түүх"}
           articles={articles}
           onSelectArticle={openArticle}
         />

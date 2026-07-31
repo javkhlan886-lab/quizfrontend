@@ -4,10 +4,12 @@ import { PanelLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { SavedArticle } from "../types";
 
-// Left-side panel that lists every article you've generated before.
+// Left-side panel that lists every article you've generated before (or, when
+// the "view all users' quizzes" toggle is on, everyone's).
 export interface HistorySidebarProps {
   open: boolean;
   onToggle: () => void;
+  title?: string;
   articles: SavedArticle[];
   onSelectArticle: (id: number) => void;
 }
@@ -15,6 +17,7 @@ export interface HistorySidebarProps {
 export default function HistorySidebar({
   open,
   onToggle,
+  title = "Түүх",
   articles,
   onSelectArticle,
 }: HistorySidebarProps) {
@@ -27,7 +30,7 @@ export default function HistorySidebar({
     >
       <div className={cn("flex items-center", open ? "justify-between" : "justify-center")}>
         {open && (
-          <span className="text-sm font-semibold text-neutral-900">Түүх</span>
+          <span className="text-sm font-semibold text-neutral-900">{title}</span>
         )}
         <button
           type="button"
@@ -49,9 +52,14 @@ export default function HistorySidebar({
               type="button"
               onClick={() => onSelectArticle(article.id)}
               title={article.summary}
-              className="truncate rounded-md px-2 py-1.5 text-left text-sm text-neutral-700 hover:bg-neutral-100"
+              className="rounded-md px-2 py-1.5 text-left text-sm text-neutral-700 hover:bg-neutral-100"
             >
-              {article.title}
+              <span className="block truncate">{article.title}</span>
+              {article.author_email && (
+                <span className="block truncate text-xs text-neutral-400">
+                  {article.author_email}
+                </span>
+              )}
             </button>
           ))}
         </div>

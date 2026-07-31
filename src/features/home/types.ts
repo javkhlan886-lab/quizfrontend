@@ -45,4 +45,5 @@ export interface SavedArticle {
   title: string;
   summary: string;
   created_at: string;
+  author_email?: string;
 }
