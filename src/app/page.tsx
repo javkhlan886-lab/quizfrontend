@@ -30,7 +30,7 @@ export default function Home() {
       setSession(data.token, data.user);
       router.push("/home");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(err instanceof Error ? err.message : "Тодорхойгүй алдаа гарлаа.");
     } finally {
       setIsSubmitting(false);
     }

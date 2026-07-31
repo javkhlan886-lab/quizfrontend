@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { ChevronLeft, Sparkles } from "lucide-react";
+import { ChevronLeft, LogOut, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { apiUrl } from "@/lib/api";
 import { authHeaders, clearSession, getUser, type AuthUser } from "@/lib/auth";
@@ -30,12 +30,14 @@ export interface HomescreenProps {
 // wiring — the actual UI pieces live in HistorySidebar, ArticleForm,
 // ArticleDetail and QuizPanel.
 export default function Homescreen({
-  appName = "Quiz app",
+  appName = "Шалгалтын апп",
   onGenerateSummary,
   className,
 }: HomescreenProps) {
   const router = useRouter();
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const accountMenuRef = useRef<HTMLDivElement>(null);
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [title, setTitle] = useState("");
@@ -71,6 +73,17 @@ export default function Homescreen({
     setUser(current);
   }, [router]);
 
+  // Close the account dropdown when clicking anywhere outside it.
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (accountMenuRef.current && !accountMenuRef.current.contains(e.target as Node)) {
+        setAccountMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   async function loadArticles() {
     const res = await fetch(apiUrl("/api/articles"), { headers: authHeaders() });
     if (res.status === 401) return logout();
@@ -99,7 +112,7 @@ export default function Homescreen({
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to generate summary.");
+        throw new Error(data.error || "Хураангуй үүсгэхэд алдаа гарлаа.");
       }
 
       setDetail({
@@ -114,7 +127,7 @@ export default function Homescreen({
       resetQuiz();
       loadArticles();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(err instanceof Error ? err.message : "Тодорхойгүй алдаа гарлаа.");
     } finally {
       setIsGenerating(false);
     }
@@ -173,20 +186,14 @@ export default function Homescreen({
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to submit answer.");
+        throw new Error(data.error || "Хариултыг илгээхэд алдаа гарлаа.");
       }
 
       setAttemptResult(data);
       setQuizPhase("submitted");
     } catch (err) {
-      setAttemptError(err instanceof Error ? err.message : "Something went wrong.");
+      setAttemptError(err instanceof Error ? err.message : "Тодорхойгүй алдаа гарлаа.");
       setQuizPhase("answering");
-    }
-  }
-
-  function handleAccountClick() {
-    if (window.confirm("Гарах уу?")) {
-      logout();
     }
   }
 
@@ -197,19 +204,37 @@ export default function Homescreen({
           <Image src="/logo.png" alt="Гурван Дэлгэр ХХК" width={347} height={270} className="h-12 w-auto" />
           <span className="text-sm font-medium text-neutral-400">{appName}</span>
         </div>
-        <button
-          type="button"
-          onClick={handleAccountClick}
-          title="Гарах"
-          className="flex items-center gap-2 rounded-full py-1 pl-1 pr-3 transition-colors hover:bg-neutral-100"
-        >
-          <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-fuchsia-400 via-purple-500 to-indigo-500 text-sm font-semibold text-white">
-            {user?.email?.[0]?.toUpperCase() ?? "?"}
-          </div>
-          <span className="max-w-[160px] truncate text-sm font-medium text-neutral-700">
-            {user?.email}
-          </span>
-        </button>
+
+        <div className="relative" ref={accountMenuRef}>
+          <button
+            type="button"
+            onClick={() => setAccountMenuOpen((v) => !v)}
+            className="flex items-center gap-2 rounded-full py-1 pl-1 pr-3 transition-colors hover:bg-neutral-100"
+          >
+            <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-fuchsia-400 via-purple-500 to-indigo-500 text-sm font-semibold text-white">
+              {user?.email?.[0]?.toUpperCase() ?? "?"}
+            </div>
+            <span className="max-w-[160px] truncate text-sm font-medium text-neutral-700">
+              {user?.email}
+            </span>
+          </button>
+
+          {accountMenuOpen && (
+            <div className="absolute right-0 top-full z-10 mt-2 w-56 overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-lg">
+              <div className="border-b border-neutral-100 px-3 py-2">
+                <p className="truncate text-sm font-medium text-neutral-900">{user?.email}</p>
+              </div>
+              <button
+                type="button"
+                onClick={logout}
+                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-600 hover:bg-neutral-50"
+              >
+                <LogOut className="size-3.5" />
+                Гарах
+              </button>
+            </div>
+          )}
+        </div>
       </header>
 
       <div className="flex flex-1 overflow-hidden">
@@ -247,7 +272,7 @@ export default function Homescreen({
               <div className="flex items-center gap-2">
                 <Sparkles className="size-4 text-neutral-900" />
                 <h1 className="text-base font-semibold text-neutral-900">
-                  Article Quiz Generator
+                  Өгүүллийн Quiz Үүсгэгч
                 </h1>
               </div>
 

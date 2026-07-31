@@ -76,10 +76,10 @@ export default function Login({
         <div className="flex flex-col gap-6 px-6 pt-8 pb-6">
           <div className="flex flex-col items-center gap-1 text-center">
             <h1 className="text-xl font-bold text-neutral-900">
-              Sign in to {appName}
+              {appName} рүү нэвтрэх
             </h1>
             <p className="text-sm text-neutral-500">
-              Welcome back! Please sign in to continue
+              Тавтай морил! Үргэлжлүүлэхийн тулд нэвтэрнэ үү
             </p>
           </div>
 
@@ -89,12 +89,12 @@ export default function Login({
             className="flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-neutral-200 bg-white text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50"
           >
             <GoogleIcon className="size-4" />
-            Continue with Google
+            Google-ээр үргэлжлүүлэх
           </button>
 
           <div className="flex items-center gap-3">
             <div className="h-px flex-1 bg-neutral-200" />
-            <span className="text-xs text-neutral-400">or</span>
+            <span className="text-xs text-neutral-400">эсвэл</span>
             <div className="h-px flex-1 bg-neutral-200" />
           </div>
 
@@ -104,7 +104,7 @@ export default function Login({
                 htmlFor="email"
                 className="text-sm font-medium text-neutral-900"
               >
-                Email address
+                И-мэйл хаяг
               </label>
               <input
                 id="email"
@@ -112,7 +112,7 @@ export default function Login({
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email address"
+                placeholder="И-мэйл хаягаа оруулна уу"
                 className="h-10 w-full rounded-lg border border-neutral-200 px-3 text-sm text-neutral-900 outline-none placeholder:text-neutral-400 focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
               />
             </div>
@@ -122,7 +122,7 @@ export default function Login({
               disabled={isSubmitting}
               className="flex h-10 w-full items-center justify-center gap-1.5 rounded-lg bg-violet-600 text-sm font-medium text-white transition-colors hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {isSubmitting ? "Continuing..." : "Continue"}
+              {isSubmitting ? "Үргэлжлүүлж байна..." : "Үргэлжлүүлэх"}
               <ArrowRight className="size-4" />
             </button>
 
@@ -131,13 +131,13 @@ export default function Login({
         </div>
 
         <div className="border-t border-neutral-100 bg-neutral-50 py-4 text-center text-sm text-neutral-500">
-          Don&apos;t have an account?{" "}
+          {" "}
           <button
             type="button"
             onClick={onSignUp}
             className="font-medium text-violet-600 hover:text-violet-700"
           >
-            Sign up
+            Бүртгүүлэх
           </button>
         </div>
 
@@ -149,7 +149,7 @@ export default function Login({
           }}
         >
           <div className="flex items-center justify-center gap-1 text-xs text-neutral-400">
-            <span>Secured by</span>
+            <span>Хамгаалагдсан:</span>
             <span className="flex items-center gap-1 font-semibold text-neutral-600">
               <ClerkMark className="size-3.5" />
               clerk
@@ -157,7 +157,7 @@ export default function Login({
           </div>
           {devMode && (
             <div className="mt-0.5 text-xs font-medium text-orange-500">
-              Development mode
+              Хөгжүүлэлтийн горим
             </div>
           )}
         </div>

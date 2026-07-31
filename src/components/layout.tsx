@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Гурван Дэлгэр ХХК | Quiz app",
-  description: "Гурван Дэлгэр ХХК-ийн Article Quiz Generator",
+  title: "Гурван Дэлгэр ХХК | Шалгалтын апп",
+  description: "Гурван Дэлгэр ХХК-ийн Өгүүллийн Quiz Үүсгэгч",
 };
 
 export default function RootLayout({
@@ -24,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="mn"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>

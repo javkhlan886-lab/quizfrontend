@@ -71,7 +71,7 @@ export default function QuizPanel({
         <div className="flex items-center gap-2">
           <Sparkles className="size-4 text-neutral-900" />
           <h1 className="text-base font-semibold text-neutral-900">
-            {phase === "submitted" ? "Quiz completed" : "Quick test"}
+            {phase === "submitted" ? "Шалгалт дууссан" : "Түргэн шалгалт"}
           </h1>
         </div>
         {isTaking && (
@@ -87,8 +87,8 @@ export default function QuizPanel({
       </div>
       <p className="mt-1 text-sm text-neutral-500">
         {phase === "submitted"
-          ? "Let's see what you did"
-          : "Take a quiz about your knowledge from your content"}
+          ? "Хэрхэн гүйцэтгэсэнээ харцгаая"
+          : "Агуулгаараа мэдлэгээ шалгах шалгалт өг"}
       </p>
 
       {isTaking && currentQuestion && (
@@ -123,7 +123,7 @@ export default function QuizPanel({
       {phase === "submitted" && attemptResult && (
         <div className="mt-4 rounded-lg border border-neutral-200 p-4">
           <h2 className="text-base font-semibold text-neutral-900">
-            Your score: {attemptResult.correctCount}{" "}
+            Таны оноо: {attemptResult.correctCount}{" "}
             <span className="text-sm font-normal text-neutral-400">
               / {attemptResult.totalQuestions}
             </span>
@@ -148,9 +148,9 @@ export default function QuizPanel({
                     <p className="text-sm text-neutral-900">
                       {i + 1}. {q.question}
                     </p>
-                    <p className="text-sm text-neutral-500">Your answer: {pickedText}</p>
+                    <p className="text-sm text-neutral-500">Таны хариулт: {pickedText}</p>
                     {!result?.isCorrect && (
-                      <p className="text-sm text-emerald-600">Correct: {correctText}</p>
+                      <p className="text-sm text-emerald-600">Зөв хариулт: {correctText}</p>
                     )}
                   </div>
                 </li>
@@ -165,7 +165,7 @@ export default function QuizPanel({
               className="flex items-center gap-1.5 rounded-lg border border-neutral-200 px-3 py-1.5 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
             >
               <RotateCcw className="size-3.5" />
-              Restart quiz
+              Дахин эхлэх
             </button>
             <button
               type="button"
@@ -173,7 +173,7 @@ export default function QuizPanel({
               className="flex items-center gap-1.5 rounded-lg bg-neutral-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-neutral-800"
             >
               <Save className="size-3.5" />
-              Save and leave
+              Хадгалж гарах
             </button>
           </div>
         </div>
@@ -182,9 +182,9 @@ export default function QuizPanel({
       {confirmCancel && (
         <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/40 p-6">
           <div className="w-full max-w-xs rounded-lg bg-white p-4 shadow-lg">
-            <h3 className="text-sm font-semibold text-neutral-900">Are you sure?</h3>
+            <h3 className="text-sm font-semibold text-neutral-900">Итгэлтэй байна уу?</h3>
             <p className="mt-1 text-sm text-red-600">
-              If you press &apos;Cancel&apos;, this quiz will restart from the beginning.
+              Хэрэв &apos;Шалгалтыг цуцлах&apos; дарвал энэ шалгалт эхнээсээ дахин эхэлнэ.
             </p>
             <div className="mt-3 flex gap-2">
               <button
@@ -192,7 +192,7 @@ export default function QuizPanel({
                 onClick={() => setConfirmCancel(false)}
                 className="flex-1 rounded-lg bg-neutral-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-neutral-800"
               >
-                Go back
+                Буцах
               </button>
               <button
                 type="button"
@@ -202,7 +202,7 @@ export default function QuizPanel({
                 }}
                 className="flex-1 rounded-lg border border-neutral-200 px-3 py-1.5 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
               >
-                Cancel quiz
+                Шалгалтыг цуцлах
               </button>
             </div>
           </div>

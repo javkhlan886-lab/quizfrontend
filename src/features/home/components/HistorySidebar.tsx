@@ -27,7 +27,7 @@ export default function HistorySidebar({
     >
       <div className={cn("flex items-center", open ? "justify-between" : "justify-center")}>
         {open && (
-          <span className="text-sm font-semibold text-neutral-900">History</span>
+          <span className="text-sm font-semibold text-neutral-900">Түүх</span>
         )}
         <button
           type="button"
@@ -41,7 +41,7 @@ export default function HistorySidebar({
       {open && (
         <div className="mt-2 flex flex-col overflow-y-auto">
           {articles.length === 0 && (
-            <span className="px-2 py-1.5 text-xs text-neutral-400">No articles yet</span>
+            <span className="px-2 py-1.5 text-xs text-neutral-400">Одоогоор өгүүлэл алга</span>
           )}
           {articles.map((article) => (
             <button
