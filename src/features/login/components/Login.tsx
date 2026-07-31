@@ -111,7 +111,7 @@ export default function Login({
   }
 
   return (
-    <div className={cn("flex w-full flex-col items-center", className)}>
+    <div className={cn("flex w-full flex-col items-center px-4 py-8 sm:py-12", className)}>
       {hasRealGoogleAuth && (
         <Script
           src="https://accounts.google.com/gsi/client"
@@ -120,12 +120,12 @@ export default function Login({
         />
       )}
       <div className="mb-6 flex flex-col items-center gap-1">
-        <Image src="/logo.png" alt="Гурван Дэлгэр ХХК" width={347} height={270} className="h-16 w-auto" />
+        <Image src="/logo.png" alt="Гурван Дэлгэр ХХК" width={347} height={270} className="h-14 w-auto sm:h-16" />
         <span className="text-sm font-medium text-neutral-500">Гурван Дэлгэр ХХК</span>
       </div>
 
       <div className="w-full max-w-sm overflow-hidden rounded-xl bg-white shadow-md ring-1 ring-black/5">
-        <div className="flex flex-col gap-6 px-6 pt-8 pb-6">
+        <div className="flex flex-col gap-6 px-5 pt-7 pb-6 sm:px-6 sm:pt-8">
           <div className="flex flex-col items-center gap-1 text-center">
             <h1 className="text-xl font-bold text-neutral-900">
               Асуулт хариултын апп руу тавтай морилно уу

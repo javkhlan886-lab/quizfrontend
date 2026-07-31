@@ -39,7 +39,7 @@ export default function Homescreen({
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement>(null);
 
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showAllArticles, setShowAllArticles] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -212,28 +212,28 @@ export default function Homescreen({
 
   return (
     <div className={cn("flex h-screen flex-col bg-white", className)}>
-      <header className="flex h-16 shrink-0 items-center justify-between border-b border-neutral-200 px-4">
-        <div className="flex items-center gap-2">
-          <Image src="/logo.png" alt="Гурван Дэлгэр ХХК" width={347} height={270} className="h-12 w-auto" />
-          <span className="text-sm font-medium text-neutral-400">{appName}</span>
+      <header className="flex h-14 shrink-0 items-center justify-between border-b border-neutral-200 px-3 sm:h-16 sm:px-4">
+        <div className="flex min-w-0 items-center gap-2">
+          <Image src="/logo.png" alt="Гурван Дэлгэр ХХК" width={347} height={270} className="h-9 w-auto shrink-0 sm:h-12" />
+          <span className="hidden truncate text-sm font-medium text-neutral-400 sm:inline">{appName}</span>
         </div>
 
-        <div className="relative" ref={accountMenuRef}>
+        <div className="relative shrink-0" ref={accountMenuRef}>
           <button
             type="button"
             onClick={() => setAccountMenuOpen((v) => !v)}
-            className="flex items-center gap-2 rounded-full py-1 pl-1 pr-3 transition-colors hover:bg-neutral-100"
+            className="flex items-center gap-2 rounded-full py-1 pl-1 pr-2 transition-colors hover:bg-neutral-100 sm:pr-3"
           >
             <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-fuchsia-400 via-purple-500 to-indigo-500 text-sm font-semibold text-white">
               {user?.email?.[0]?.toUpperCase() ?? "?"}
             </div>
-            <span className="max-w-[160px] truncate text-sm font-medium text-neutral-700">
+            <span className="hidden max-w-[160px] truncate text-sm font-medium text-neutral-700 sm:inline">
               {user?.email}
             </span>
           </button>
 
           {accountMenuOpen && (
-            <div className="absolute right-0 top-full z-10 mt-2 w-56 overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-lg">
+            <div className="absolute right-0 top-full z-40 mt-2 w-56 overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-lg">
               <div className="border-b border-neutral-100 px-3 py-2">
                 <p className="truncate text-sm font-medium text-neutral-900">{user?.email}</p>
               </div>
@@ -269,7 +269,7 @@ export default function Homescreen({
           onSelectArticle={openArticle}
         />
 
-        <main className="flex-1 overflow-auto bg-neutral-50 p-8">
+        <main className="flex-1 overflow-auto bg-neutral-50 p-4 sm:p-8">
           {detail && quizPhase === "closed" && (
             <button
               type="button"
@@ -292,11 +292,11 @@ export default function Homescreen({
               attemptError={attemptError}
             />
           ) : (
-            <div className="mx-auto max-w-2xl rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+            <div className="mx-auto max-w-2xl rounded-xl border border-neutral-200 bg-white p-4 shadow-sm sm:p-6">
               <div className="flex items-center gap-2">
-                <Sparkles className="size-4 text-neutral-900" />
+                <Sparkles className="size-4 shrink-0 text-neutral-900" />
                 <h1 className="text-base font-semibold text-neutral-900">
-                  Өгүүллийн Quiz Үүсгэгч
+                   Quiz Үүсгэгч
                 </h1>
               </div>
 

@@ -64,7 +64,7 @@ export default function ArticleForm({
           type="button"
           onClick={onGenerate}
           disabled={!canGenerate}
-          className="rounded-lg bg-neutral-200 px-4 py-2 text-sm font-medium text-neutral-400 transition-colors disabled:cursor-not-allowed enabled:bg-violet-600 enabled:text-white enabled:hover:bg-violet-700"
+          className="w-full rounded-lg bg-neutral-200 px-4 py-2 text-sm font-medium text-neutral-400 transition-colors disabled:cursor-not-allowed enabled:bg-violet-600 enabled:text-white enabled:hover:bg-violet-700 sm:w-auto"
         >
           {isGenerating ? "Үүсгэж байна..." : "Хураангуй үүсгэх"}
         </button>
