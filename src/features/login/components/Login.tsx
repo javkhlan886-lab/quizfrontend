@@ -1,9 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Script from "next/script";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        id: {
+          initialize: (config: {
+            client_id: string;
+            callback: (response: { credential: string }) => void;
+          }) => void;
+          renderButton: (parent: HTMLElement, options: Record<string, string>) => void;
+        };
+      };
+    };
+  }
+}
 
 function GoogleIcon({ className }: { className?: string }) {
   return (
@@ -40,6 +57,7 @@ function ClerkMark({ className }: { className?: string }) {
 export interface LoginProps {
   appName?: string;
   onGoogleSignIn?: () => void;
+  onGoogleCredential?: (idToken: string) => void;
   onContinue?: (email: string) => void;
   onSignUp?: () => void;
   devMode?: boolean;
@@ -51,6 +69,7 @@ export interface LoginProps {
 export default function Login({
   appName = "test",
   onGoogleSignIn,
+  onGoogleCredential,
   onContinue,
   onSignUp,
   devMode = true,
@@ -59,6 +78,32 @@ export default function Login({
   error,
 }: LoginProps) {
   const [email, setEmail] = useState("");
+  const [googleScriptReady, setGoogleScriptReady] = useState(false);
+  const googleButtonRef = useRef<HTMLDivElement>(null);
+
+  const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+  // Only render Google's real button once we have both a Client ID and a
+  // handler to send the credential to. Otherwise fall back to the static
+  // placeholder button below.
+  const hasRealGoogleAuth = Boolean(googleClientId && onGoogleCredential);
+
+  useEffect(() => {
+    if (!googleScriptReady || !hasRealGoogleAuth || !googleButtonRef.current) return;
+    if (!window.google) return;
+
+    window.google.accounts.id.initialize({
+      client_id: googleClientId!,
+      callback: (response) => onGoogleCredential!(response.credential),
+    });
+    window.google.accounts.id.renderButton(googleButtonRef.current, {
+      type: "standard",
+      theme: "outline",
+      size: "large",
+      text: "continue_with",
+      shape: "rectangular",
+      width: "336",
+    });
+  }, [googleScriptReady, hasRealGoogleAuth, googleClientId, onGoogleCredential]);
 
   function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault();
@@ -67,6 +112,13 @@ export default function Login({
 
   return (
     <div className={cn("flex w-full flex-col items-center", className)}>
+      {hasRealGoogleAuth && (
+        <Script
+          src="https://accounts.google.com/gsi/client"
+          strategy="afterInteractive"
+          onReady={() => setGoogleScriptReady(true)}
+        />
+      )}
       <div className="mb-6 flex flex-col items-center gap-1">
         <Image src="/logo.png" alt="Гурван Дэлгэр ХХК" width={347} height={270} className="h-16 w-auto" />
         <span className="text-sm font-medium text-neutral-500">Гурван Дэлгэр ХХК</span>
@@ -76,21 +128,25 @@ export default function Login({
         <div className="flex flex-col gap-6 px-6 pt-8 pb-6">
           <div className="flex flex-col items-center gap-1 text-center">
             <h1 className="text-xl font-bold text-neutral-900">
-              {appName} рүү нэвтрэх
+              Асуулт хариултын апп руу тавтай морилно уу
             </h1>
             <p className="text-sm text-neutral-500">
-              Тавтай морил! Үргэлжлүүлэхийн тулд нэвтэрнэ үү
+               Үргэлжлүүлэхийн тулд нэвтэрнэ үү
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={onGoogleSignIn}
-            className="flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-neutral-200 bg-white text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50"
-          >
-            <GoogleIcon className="size-4" />
-            Google-ээр үргэлжлүүлэх
-          </button>
+          {hasRealGoogleAuth ? (
+            <div ref={googleButtonRef} className="flex w-full justify-center" />
+          ) : (
+            <button
+              type="button"
+              onClick={onGoogleSignIn}
+              className="flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-neutral-200 bg-white text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50"
+            >
+              <GoogleIcon className="size-4" />
+              Google-ээр үргэлжлүүлэх
+            </button>
+          )}
 
           <div className="flex items-center gap-3">
             <div className="h-px flex-1 bg-neutral-200" />
@@ -137,7 +193,7 @@ export default function Login({
             onClick={onSignUp}
             className="font-medium text-violet-600 hover:text-violet-700"
           >
-            Бүртгүүлэх
+          
           </button>
         </div>
 
@@ -152,12 +208,12 @@ export default function Login({
             <span>Хамгаалагдсан:</span>
             <span className="flex items-center gap-1 font-semibold text-neutral-600">
               <ClerkMark className="size-3.5" />
-              clerk
+              
             </span>
           </div>
           {devMode && (
             <div className="mt-0.5 text-xs font-medium text-orange-500">
-              Хөгжүүлэлтийн горим
+              
             </div>
           )}
         </div>

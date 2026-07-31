@@ -11,15 +11,15 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function handleContinue(email: string) {
+  async function loginWith(path: string, body: Record<string, string>) {
     setIsSubmitting(true);
     setError(null);
 
     try {
-      const res = await fetch(apiUrl("/api/auth/login"), {
+      const res = await fetch(apiUrl(path), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify(body),
       });
       const data = await res.json();
 
@@ -37,6 +37,11 @@ export default function Home() {
   }
 
   return (
-    <Login onContinue={handleContinue} isSubmitting={isSubmitting} error={error} />
+    <Login
+      onContinue={(email) => loginWith("/api/auth/login", { email })}
+      onGoogleCredential={(idToken) => loginWith("/api/auth/google", { idToken })}
+      isSubmitting={isSubmitting}
+      error={error}
+    />
   );
 }
